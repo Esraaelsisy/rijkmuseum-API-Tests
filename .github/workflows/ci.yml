@@ -1,0 +1,60 @@
+name: Run Postman Collection with Newman
+
+on:
+  push:
+    branches:
+      - main  # Triggers the workflow on pushes to the main branch
+  pull_request:
+    branches:
+      - main  # Triggers the workflow on pull requests to the main branch
+
+jobs:
+  newman_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository containing the Postman collection, environment, and globals
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js (required for Newman)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Step 3: Install Newman
+      - name: Install Newman
+        run: npm install -g newman
+
+      # Step 4: Run Postman collection using the English environment
+      - name: Run Postman Collection (EN Production)
+        run: |
+          newman run collections/rijksmuseum_collection.json \
+            --environment environment/en_production.environment.json \
+            --globals environment/globals.json \
+            --reporters cli,html \
+            --reporter-html-export newman-report-en.html
+
+      # Step 5: Run Postman collection using the Dutch environment
+      - name: Run Postman Collection (NL Production)
+        run: |
+          newman run collections/rijksmuseum_collection.json \
+            --environment environment/nl_production.environment.json \
+            --globals environment/globals.json \
+            --reporters cli,html \
+            --reporter-html-export newman-report-nl.html
+
+      # Step 6: Upload the English report as a build artifact
+      - name: Upload EN report
+        uses: actions/upload-artifact@v2
+        with:
+          name: newman-report-en
+          path: newman-report-en.html
+
+      # Step 7: Upload the Dutch report as a build artifact
+      - name: Upload NL report
+        uses: actions/upload-artifact@v2
+        with:
+          name: newman-report-nl
+          path: newman-report-nl.html
