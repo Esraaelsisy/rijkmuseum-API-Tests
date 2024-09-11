@@ -47,14 +47,14 @@ jobs:
 
       # Step 6: Upload the English report as a build artifact
       - name: Upload EN report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: newman-report-en
           path: newman-report-en.html
 
       # Step 7: Upload the Dutch report as a build artifact
       - name: Upload NL report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: newman-report-nl
           path: newman-report-nl.html
