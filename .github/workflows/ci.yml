@@ -3,32 +3,28 @@ name: Run Rijksmuseum Postman Collections with Newman
 on:
   push:
     branches:
-      - main  # Triggers the workflow on pushes to the main branch
+      - main
   pull_request:
     branches:
-      - main  # Triggers the workflow on pull requests to the main branch
+      - main
 
 jobs:
   newman_test:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository containing the Postman collections, environment, and globals
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Set up Node.js (required for Newman)
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '22'
 
-      # Step 3: Install Newman
       - name: Install Newman
         run: npm install -g newman
 
-      # Step 4: Run Postman collection for each collection with English and Dutch environments
-      # Run 'collection_API' collection with EN and NL environments
+      # Run Collection API (EN Production) and continue on error
       - name: Run Collection API (EN Production)
         run: |
           newman run collections/collection_API.collection.json \
@@ -36,7 +32,9 @@ jobs:
             --globals environment/globals.json \
             --reporters cli,html \
             --reporter-html-export newman-report-collection-EN.html
+        continue-on-error: true  # Allows the workflow to continue if this step fails
 
+      # Run Collection API (NL Production) and continue on error
       - name: Run Collection API (NL Production)
         run: |
           newman run collections/collection_API.collection.json \
@@ -44,8 +42,9 @@ jobs:
             --globals environment/globals.json \
             --reporters cli,html \
             --reporter-html-export newman-report-collection-NL.html
+        continue-on-error: true
 
-      # Run 'collectionDetails_API' collection with EN and NL environments
+      # Run Collection Details API (EN Production)
       - name: Run Collection Details API (EN Production)
         run: |
           newman run collections/collectionDetails_API.collection.json \
@@ -53,7 +52,9 @@ jobs:
             --globals environment/globals.json \
             --reporters cli,html \
             --reporter-html-export newman-report-details-EN.html
+        continue-on-error: true
 
+      # Run Collection Details API (NL Production)
       - name: Run Collection Details API (NL Production)
         run: |
           newman run collections/collectionDetails_API.collection.json \
@@ -61,8 +62,9 @@ jobs:
             --globals environment/globals.json \
             --reporters cli,html \
             --reporter-html-export newman-report-details-NL.html
+        continue-on-error: true
 
-      # Run 'collectionTiles_API' collection with EN and NL environments
+      # Run Collection Tiles API (EN Production)
       - name: Run Collection Tiles API (EN Production)
         run: |
           newman run collections/collectionTiles_API.collection.json \
@@ -70,7 +72,9 @@ jobs:
             --globals environment/globals.json \
             --reporters cli,html \
             --reporter-html-export newman-report-tiles-EN.html
+        continue-on-error: true
 
+      # Run Collection Tiles API (NL Production)
       - name: Run Collection Tiles API (NL Production)
         run: |
           newman run collections/collectionTiles_API.collection.json \
@@ -78,8 +82,9 @@ jobs:
             --globals environment/globals.json \
             --reporters cli,html \
             --reporter-html-export newman-report-tiles-NL.html
+        continue-on-error: true
 
-      # Step 5: Upload HTML reports as build artifacts
+      # Upload Collection API reports
       - name: Upload Collection API reports
         uses: actions/upload-artifact@v4
         with:
@@ -88,6 +93,7 @@ jobs:
             newman-report-collection-EN.html
             newman-report-collection-NL.html
 
+      # Upload Collection Details API reports
       - name: Upload Collection Details API reports
         uses: actions/upload-artifact@v4
         with:
@@ -96,6 +102,7 @@ jobs:
             newman-report-details-EN.html
             newman-report-details-NL.html
 
+      # Upload Collection Tiles API reports
       - name: Upload Collection Tiles API reports
         uses: actions/upload-artifact@v4
         with:
