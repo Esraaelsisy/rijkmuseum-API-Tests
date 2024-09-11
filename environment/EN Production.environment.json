@@ -1,0 +1,21 @@
+{
+	"id": "55436fd7-ba9e-42e4-81c0-8e4ecd490822",
+	"name": "EN Production",
+	"values": [
+		{
+			"key": "rb_url",
+			"value": "https://www.rijksmuseum.nl",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "culture",
+			"value": "en",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-09-10T18:12:31.249Z",
+	"_postman_exported_using": "Postman/11.11.1"
+}
