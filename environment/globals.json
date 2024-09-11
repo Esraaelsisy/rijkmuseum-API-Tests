@@ -1,0 +1,21 @@
+{
+	"id": "4956d853-8535-4ad2-8a3e-0b8350d061b6",
+	"values": [
+		{
+			"key": "key",
+			"value": "0fiuZFh4",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "format",
+			"value": "json",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2024-09-10T18:12:15.360Z",
+	"_postman_exported_using": "Postman/11.11.1"
+}
