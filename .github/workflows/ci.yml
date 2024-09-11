@@ -13,18 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository containing the Postman collections, environments, and globals
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # Step 2: Set up Node.js (required for Newman)
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '22'
 
+      # Step 3: Install Newman
       - name: Install Newman
         run: npm install -g newman
 
-      # Run Collection API (EN Production) and continue on error
+      # Step 4: Run Collection API (EN Production) and continue on error
       - name: Run Collection API (EN Production)
         run: |
           newman run collections/collection_API.collection.json \
@@ -32,9 +35,9 @@ jobs:
             --globals environment/globals.json \
             --reporters cli,html \
             --reporter-html-export newman-report-collection-EN.html
-        continue-on-error: true  # Allows the workflow to continue if this step fails
+        continue-on-error: true  # Continue even if there's an error
 
-      # Run Collection API (NL Production) and continue on error
+      # Step 5: Run Collection API (NL Production) and continue on error
       - name: Run Collection API (NL Production)
         run: |
           newman run collections/collection_API.collection.json \
@@ -44,7 +47,7 @@ jobs:
             --reporter-html-export newman-report-collection-NL.html
         continue-on-error: true
 
-      # Run Collection Details API (EN Production)
+      # Step 6: Run Collection Details API (EN Production)
       - name: Run Collection Details API (EN Production)
         run: |
           newman run collections/collectionDetails_API.collection.json \
@@ -54,7 +57,7 @@ jobs:
             --reporter-html-export newman-report-details-EN.html
         continue-on-error: true
 
-      # Run Collection Details API (NL Production)
+      # Step 7: Run Collection Details API (NL Production)
       - name: Run Collection Details API (NL Production)
         run: |
           newman run collections/collectionDetails_API.collection.json \
@@ -64,7 +67,7 @@ jobs:
             --reporter-html-export newman-report-details-NL.html
         continue-on-error: true
 
-      # Run Collection Tiles API (EN Production)
+      # Step 8: Run Collection Tiles API (EN Production)
       - name: Run Collection Tiles API (EN Production)
         run: |
           newman run collections/collectionTiles_API.collection.json \
@@ -74,7 +77,7 @@ jobs:
             --reporter-html-export newman-report-tiles-EN.html
         continue-on-error: true
 
-      # Run Collection Tiles API (NL Production)
+      # Step 9: Run Collection Tiles API (NL Production)
       - name: Run Collection Tiles API (NL Production)
         run: |
           newman run collections/collectionTiles_API.collection.json \
@@ -84,7 +87,7 @@ jobs:
             --reporter-html-export newman-report-tiles-NL.html
         continue-on-error: true
 
-      # Upload Collection API reports
+      # Step 10: Upload Collection API reports
       - name: Upload Collection API reports
         uses: actions/upload-artifact@v4
         with:
@@ -93,7 +96,7 @@ jobs:
             newman-report-collection-EN.html
             newman-report-collection-NL.html
 
-      # Upload Collection Details API reports
+      # Step 11: Upload Collection Details API reports
       - name: Upload Collection Details API reports
         uses: actions/upload-artifact@v4
         with:
@@ -102,7 +105,7 @@ jobs:
             newman-report-details-EN.html
             newman-report-details-NL.html
 
-      # Upload Collection Tiles API reports
+      # Step 12: Upload Collection Tiles API reports
       - name: Upload Collection Tiles API reports
         uses: actions/upload-artifact@v4
         with:
