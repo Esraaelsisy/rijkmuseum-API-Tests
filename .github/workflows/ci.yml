@@ -22,7 +22,10 @@ jobs:
           node-version: '22'
 
       - name: Install Newman
-        run: npm install -g newman
+        run: npm install -g newman@latest
+
+      - name : Install Newman Reporter
+        run:  npm install -g newman-reporter-html@latest
 
       # Run Collection API (EN Production)
       - name: Run Collection API (EN Production)
