@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "93ed65dc-7b4a-4f21-8413-3a3731d9ea4b",
-		"name": "Collections API",
+		"name": "collections_API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "38201107"
 	},
@@ -21,7 +21,8 @@
 									"});",
 									"",
 									"pm.test(\"Response format is JSON\", function () {",
-									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
 									"});",
 									"",
 									"pm.test(\"Response contains 'artObjects' array\", function () {",
@@ -59,7 +60,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{rb_url}}/api/{{culture}}/collection?key={{key}}",
+							"raw": "{{rb_url}}/api/{{culture}}/collection?key={{key}}&format={{format}}",
 							"host": [
 								"{{rb_url}}"
 							],
@@ -72,6 +73,10 @@
 								{
 									"key": "key",
 									"value": "{{key}}"
+								},
+								{
+									"key": "format",
+									"value": "{{format}}"
 								}
 							]
 						}
@@ -85,14 +90,19 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test(\"Invalid API key returns 403\", function () {",
+									"    var key = pm.variables.get(\"key\");",
+									"    if (key === \"invalid\") {",
+									"        pm.response.to.have.status(403);",
+									"    }",
 									"});",
 									"",
-									"pm.test(\"Response has valid data\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.artObjects).to.be.an('array');",
-									"    pm.expect(jsonData.artObjects.length).to.be.above(0);",
+									"pm.test(\"Error message is present for invalid API key\", function () {",
+									"    var key = pm.variables.get(\"key\");",
+									"    if (key === \"invalid\") {",
+									"        var jsonData = pm.response.json();",
+									"        pm.expect(jsonData).to.have.property('error');",
+									"    }",
 									"});"
 								],
 								"type": "text/javascript",
@@ -104,19 +114,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{rb_url}}/api/nl/collection?key=0fiuZFh4",
+							"raw": "{{rb_url}}/api/{{culture}}/collection?key=invalid",
 							"host": [
 								"{{rb_url}}"
 							],
 							"path": [
 								"api",
-								"nl",
+								"{{culture}}",
 								"collection"
 							],
 							"query": [
 								{
 									"key": "key",
-									"value": "0fiuZFh4"
+									"value": "invalid"
 								}
 							]
 						}
@@ -134,11 +144,57 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Response has valid data\", function () {",
+									"pm.test(\"Response format is JSON\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response contains 'artObjects' array\", function () {",
 									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('artObjects');",
 									"    pm.expect(jsonData.artObjects).to.be.an('array');",
 									"    pm.expect(jsonData.artObjects.length).to.be.above(0);",
-									"});"
+									"});",
+									"",
+									"pm.test(\"Each object has 'objectNumber', 'title', and 'principalOrFirstMaker'\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.artObjects.forEach(function(obj) {",
+									"        pm.expect(obj).to.have.property('objectNumber');",
+									"        pm.expect(obj).to.have.property('title');",
+									"        pm.expect(obj).to.have.property('principalOrFirstMaker');",
+									"    });",
+									"});",
+									"pm.test(\"Each object has 'objectNumber', 'title', and 'principalOrFirstMaker'\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.artObjects.forEach(function(obj) {",
+									"        pm.expect(obj).to.have.property('objectNumber');",
+									"        pm.expect(obj).to.have.property('title');",
+									"        pm.expect(obj).to.have.property('principalOrFirstMaker');",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Each object is created by Rembrandt van Rijn\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.artObjects.forEach(function(obj) {",
+									"        pm.expect(obj.principalOrFirstMaker).to.include('Rembrandt van Rijn');",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"No critical fields are null or missing\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.artObjects.forEach(function(obj) {",
+									"        pm.expect(obj.objectNumber).to.not.be.null;",
+									"        pm.expect(obj.title).to.not.be.null;",
+									"        pm.expect(obj.principalOrFirstMaker).to.not.be.null;",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"Pagination returns correct number of objects\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.artObjects.length).to.eql(10);",
+									"});",
+									"",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -149,19 +205,27 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{rb_url}}/api/nl/collection?key=0fiuZFh4",
+							"raw": "{{rb_url}}/api/{{culture}}/collection?key={{key}}&involvedMaker=Rembrandt+van+Rijn&format={{format}}",
 							"host": [
 								"{{rb_url}}"
 							],
 							"path": [
 								"api",
-								"nl",
+								"{{culture}}",
 								"collection"
 							],
 							"query": [
 								{
 									"key": "key",
-									"value": "0fiuZFh4"
+									"value": "{{key}}"
+								},
+								{
+									"key": "involvedMaker",
+									"value": "Rembrandt+van+Rijn"
+								},
+								{
+									"key": "format",
+									"value": "{{format}}"
 								}
 							]
 						}
@@ -175,14 +239,13 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
 									"});",
 									"",
-									"pm.test(\"Response has valid data\", function () {",
+									"pm.test(\"Empty array for invalid artist name\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.artObjects).to.be.an('array');",
-									"    pm.expect(jsonData.artObjects.length).to.be.above(0);",
+									"    pm.expect(jsonData.artObjects.length).to.eql(0);",
 									"});"
 								],
 								"type": "text/javascript",
@@ -194,19 +257,27 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{rb_url}}/api/nl/collection?key=0fiuZFh4",
+							"raw": "{{rb_url}}/api/{{culture}}/collection?key={{key}}&involvedMaker=Invalid+Involved+Maker&format={{format}}",
 							"host": [
 								"{{rb_url}}"
 							],
 							"path": [
 								"api",
-								"nl",
+								"{{culture}}",
 								"collection"
 							],
 							"query": [
 								{
 									"key": "key",
-									"value": "0fiuZFh4"
+									"value": "{{key}}"
+								},
+								{
+									"key": "involvedMaker",
+									"value": "Invalid+Involved+Maker"
+								},
+								{
+									"key": "format",
+									"value": "{{format}}"
 								}
 							]
 						}
