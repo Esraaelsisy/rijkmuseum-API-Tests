@@ -1,0 +1,219 @@
+{
+	"info": {
+		"_postman_id": "93ed65dc-7b4a-4f21-8413-3a3731d9ea4b",
+		"name": "Collections API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38201107"
+	},
+	"item": [
+		{
+			"name": "Get Collections",
+			"item": [
+				{
+					"name": "Get All Collections",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response format is JSON\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response contains 'artObjects' array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('artObjects');",
+									"    pm.expect(jsonData.artObjects).to.be.an('array');",
+									"});",
+									"",
+									"pm.test(\"Each object has 'objectNumber', 'title', and 'principalOrFirstMaker'\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.artObjects.forEach(function(obj) {",
+									"        pm.expect(obj).to.have.property('objectNumber');",
+									"        pm.expect(obj).to.have.property('title');",
+									"        pm.expect(obj).to.have.property('principalOrFirstMaker');",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"'artObjects' array is not empty\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.artObjects.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"Pagination returns correct number of objects\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var pageSize = pm.request.url.query.get(\"ps\") || 10; // Default to 10 if ps is not provided",
+									"    pm.expect(jsonData.artObjects.length).to.eql(parseInt(pageSize));",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{rb_url}}/api/{{culture}}/collection?key={{key}}",
+							"host": [
+								"{{rb_url}}"
+							],
+							"path": [
+								"api",
+								"{{culture}}",
+								"collection"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{key}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Collections Invalid Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has valid data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.artObjects).to.be.an('array');",
+									"    pm.expect(jsonData.artObjects.length).to.be.above(0);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{rb_url}}/api/nl/collection?key=0fiuZFh4",
+							"host": [
+								"{{rb_url}}"
+							],
+							"path": [
+								"api",
+								"nl",
+								"collection"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "0fiuZFh4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search By Valid Involved Maker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has valid data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.artObjects).to.be.an('array');",
+									"    pm.expect(jsonData.artObjects.length).to.be.above(0);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{rb_url}}/api/nl/collection?key=0fiuZFh4",
+							"host": [
+								"{{rb_url}}"
+							],
+							"path": [
+								"api",
+								"nl",
+								"collection"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "0fiuZFh4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search By Invalid Involved Maker",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has valid data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.artObjects).to.be.an('array');",
+									"    pm.expect(jsonData.artObjects.length).to.be.above(0);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{rb_url}}/api/nl/collection?key=0fiuZFh4",
+							"host": [
+								"{{rb_url}}"
+							],
+							"path": [
+								"api",
+								"nl",
+								"collection"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "0fiuZFh4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
